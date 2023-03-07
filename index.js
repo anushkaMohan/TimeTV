@@ -1,16 +1,23 @@
 const express=require('express');
 const port=8000;
 const app=express();
-
+const cookieParser=require('cookie-parser');
 const db=require('./config/mongoose');
-
+const router=require('./routes/users');
 const expressLayout=require('express-ejs-layouts');
 
+app.use(cookieParser());
 app.use(express.static('./assets'));
 app.use(expressLayout);
-//to use router
-app.get('/',require('./routes/index'));
+//to extract style and script from sub pages
+app.set('layout extractStyles',true);
+app.set('layout extractScripts',true);
 
+//to use router
+app.use('/',require('./routes'));
+//to use user router
+//app.get('/sign-up',require('./routes/users'))
+app.get('/sign-in',require('./routes/users'))
 //setting up view engine
 app.set('view engine','ejs');
 app.set('views','./views');
