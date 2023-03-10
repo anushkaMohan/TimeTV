@@ -5,7 +5,9 @@ const app=express();
 const bodyParser=require('body-parser');
 const cookieParser=require('cookie-parser');
 const db=require('./config/mongoose');
-
+const session=require('express-session')
+const passport=require('passport');
+const passportLocal=require('./config/passport-local-startegy');
 const expressLayout=require('express-ejs-layouts');
 
 app.use(cookieParser());
@@ -16,14 +18,29 @@ app.set('layout extractStyles',true);
 app.set('layout extractScripts',true);
 //using body parser
 app.use(bodyParser.urlencoded({extended: true}));
-//to use router
-app.use('/',require('./routes'));
+
 //to use user router
 //app.get('/sign-up',require('./routes/users'))
 //app.get('/sign-in',require('./routes/users'))
 //setting up view engine
 app.set('view engine','ejs');
 app.set('views','./views');
+
+app.use(session({
+    name:'TimeTV',
+    secret:'something',
+    saveUninitialized:false,
+    resave: false,
+    cookie:{
+      maxAge :(1000*60*100)
+    }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+//to use router
+app.use('/',require('./routes'));
 
 app.listen(port,function(err){
       if(err){
