@@ -9,6 +9,7 @@ const session=require('express-session')
 const passport=require('passport');
 const passportLocal=require('./config/passport-local-startegy');
 const expressLayout=require('express-ejs-layouts');
+const MongoStore=require('connect-mongo');
 
 app.use(cookieParser());
 app.use(express.static('./assets'));
@@ -19,25 +20,35 @@ app.set('layout extractScripts',true);
 //using body parser
 app.use(bodyParser.urlencoded({extended: true}));
 
-//to use user router
-//app.get('/sign-up',require('./routes/users'))
-//app.get('/sign-in',require('./routes/users'))
 //setting up view engine
 app.set('view engine','ejs');
 app.set('views','./views');
 
 app.use(session({
-    name:'TimeTV',
+    dbName:'TimeTV',
     secret:'something',
     saveUninitialized:false,
     resave: false,
-    cookie:{
+    ttl:{
       maxAge :(1000*60*100)
+    },
+    store:  MongoStore.create(
+      {
+       mongoUrl:'mongodb://127.0.0.1/TIMETV_development',
+       autoRemove: 'disabled'
+      
+    },
+    function(err){
+      console.log(err || 'connected to mongo-express')
     }
+    )
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(passport.setAuthencticatedUser);
 
 //to use router
 app.use('/',require('./routes'));
