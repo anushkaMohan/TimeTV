@@ -1,3 +1,4 @@
+const { populate } = require('../models/post');
 const Post=require('../models/post');
 //File used to handle various actions
 module.exports.home= function(req,res){
@@ -11,7 +12,14 @@ module.exports.home= function(req,res){
   //     posts : posts
   //   });
   //  })
-   Post.find({}).populate('user').exec(function(err,posts){
+   Post.find({}).populate('user')
+   .populate({
+    path: 'comments',
+    populate:{
+         path:'user'
+    }
+    })
+   .exec(function(err,posts){
           return res.render('home',{
             title:'TimeTV | Home',
             posts : posts
