@@ -1,0 +1,35 @@
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+header {
+  background-color: blue;
+  color: aliceblue;
+  height: 8vh;
+}
+
+#webName {
+  flex-grow: 8;
+  text-align: left;
+  margin-left: 1.2vw;
+  font-size: 6vh;
+  margin-top: 1vh;
+}
+
+.buttonAuth {
+  flex-grow: 1;
+  background-color: aliceblue;
+  height: 5vh;
+  margin-top: 1.2vh;
+  margin-left: 1.2vw;
+  margin-right: 1.2vw;
+  border-radius: 8px;
+  border: 2px solid blueviolet;
+}
+
+.buttonAuth a {
+  color: blue;
+  font-size: 4vh;
+  text-decoration: none;
+}
