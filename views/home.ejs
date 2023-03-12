@@ -2,7 +2,7 @@
        
         <h1>TimeTV/<%=title%></h1>
 
-
+     <% if (locals.user) {%>
 <section id="feed-posts">
         <h4>Posts</h4>
         <form action="/posts/create" id="new-post-form" method="POST">
@@ -25,6 +25,7 @@
                 </ul>
         </div>
 </section>
+<%}%>
 
       
     
