@@ -2,7 +2,7 @@ const Comment=require('../models/comment');
 const Post=require('../models/post');
 
 module.exports.create=function(req,res){
-    Post.findById(req.body.post,function(err,post){
+    Post.findById(req.params.id,function(err,post){
 
         if(post){
             Comment.create({
@@ -11,9 +11,10 @@ module.exports.create=function(req,res){
                 user:req.user._id
             },function(err,comment){
                 if(err){console.log("Error in creating commenting!");return;}
+                console.log(comment.content);
                 post.comments.push(comment);
                 post.save();
-                res.redirect('/');
+              return res.redirect('/');
             });
         }
     });

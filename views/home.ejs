@@ -14,7 +14,14 @@
         <div id="posts-list-container">
                 <ul>
                         <% for(post of posts) { %>
+                                <% if(locals.user && locals.user.id==post.user.id) {%> 
                                 <li>
+                                        <p>
+                                                <small>
+                                                     <a href="/posts/destroy/<%= post.id %>">Delete</a>   
+                                                </small>
+                                        </p>
+                                       <%} %>
                                         <%= post.content %>
                                         <br>
                                         <small>
@@ -41,7 +48,7 @@
                                                                         <%= comment.user.name %>
                                                                 </small>
                                                         </p>
-                                                        <% } %>
+                                                        <% } %>      
 
                                                 </ul>
                                         </div>
