@@ -11,19 +11,39 @@ module.exports.create=function(req,res){
     });
 }
 
-module.exports.destroy=function(req,res){
-    Post.findById(req.params.id,function(err,post){
+// module.exports.destroy=function(req,res){
+//     Post.findById(req.params.id),function(err,post){
+        
+//         if(post.user.id==req.user.id)
+//         {
+//             post.remove();
+//             Comment.deleteMany({post: req.params.id},function(err)
+//             {    
+//                 return res.redirect('/');
+//             });
+//         }else{
+//             console.log('Error');
+//             return res.redirect('/');
+//         }
+//     })
+// }
+module.exports.destroy = async (req, res) => {
+	try {
+		let post = await Post.findById(req.params.id);
 
-        if(post.user.id==req.user.id)
-        {
-            post.remove();
-            Comment.deleteMany({post: req.params.id},function(err)
-            {    
-                return res.redirect('/');
-            });
-        }else{
-            console.log('Error');
-            return res.redirect('/');
+		
+		if (post.user == req.user.id) {
+
+			//Delete the Post
+			post.remove();
+			console.log("Post Deleted");
+
+			await Comment.deleteMany({ post: req.params.id });
+
+			
+    return res.redirect("back");}}
+    catch (err) {
+        	
+        	return res.redirect("back");
         }
-    })
 }

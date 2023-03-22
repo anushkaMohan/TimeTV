@@ -1,21 +1,30 @@
 const Comment=require('../models/comment');
 const Post=require('../models/post');
 
-module.exports.create=function(req,res){
-    Post.findById(req.params.id,function(err,post){
-
+module.exports.create=async (req,res)=>{
+    try{
+    let post=await Post.findById(req.body.post);
+   
+    //     console.log(req.body.post);
+    //    console.log(req.body.content);
+   // console.log(post);
         if(post){
-            Comment.create({
+           // console.log("fdihgui");
+           let comment=await Comment.create({
                 content:req.body.content,
                 post:req.body.post,
-                user:req.user._id
-            },function(err,comment){
-                if(err){console.log("Error in creating commenting!");return;}
-                console.log(comment.content);
-                post.comments.push(comment);
-                post.save();
-              return res.redirect('/');
+                 user:req.user._id
             });
+            //console.log(comment.content);
+            post.comments.push(comment);
+            post.save();
+           // console.log("done");
+            return res.redirect("back");
+            }
+            return res.redirect("back");
         }
-    });
+    catch (err) {
+        console.log("Error in creating comment");
+        return res.redirect("back");
+    }
 }
