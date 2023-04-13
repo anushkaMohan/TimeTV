@@ -1,32 +1,29 @@
 const Post=require('../models/post');
 const Comment=require('../models/comment');
 
-module.exports.create=function(req,res){
-    Post.create({
+module.exports.create=async function(req,res){
+    try{
+    await Post.create({
         content: req.body.content,
         user:req.user._id
-    },function(err,post){
-        if(err){console.log("Error in creating post!");return;}
-        return res.redirect('back');
     });
+    if(xhr.req){
+        return res.status(200).json({
+              data:{
+                post:post
+              },
+              message: "Post created!"
+        });
+
+        req.flash('success','Post created')
+        return res.redirect('back');
+}
+    }catch(err){
+        if(err){req.flash('error',"Error in creating post!")};
+          res.redirect('/');
+    }
 }
 
-// module.exports.destroy=function(req,res){
-//     Post.findById(req.params.id),function(err,post){
-        
-//         if(post.user.id==req.user.id)
-//         {
-//             post.remove();
-//             Comment.deleteMany({post: req.params.id},function(err)
-//             {    
-//                 return res.redirect('/');
-//             });
-//         }else{
-//             console.log('Error');
-//             return res.redirect('/');
-//         }
-//     })
-// }
 module.exports.destroy = async (req, res) => {
 	try {
 		let post = await Post.findById(req.params.id);
@@ -36,14 +33,22 @@ module.exports.destroy = async (req, res) => {
 
 			//Delete the Post
 			post.remove();
-			console.log("Post Deleted");
+			req.flash('success',"Post Deleted");
 
 			await Comment.deleteMany({ post: req.params.id });
-
+   
+            if(req.xhr){
+               return res.status(200).json({
+                     data:{
+                        post_id:req.params._id
+                     },
+                     message:"Post deleted!"
+               })
+            }
 			
     return res.redirect("back");}}
     catch (err) {
-        	
+        	req.flash('error','Error in deleting post!');
         	return res.redirect("back");
         }
 }

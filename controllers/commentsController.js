@@ -19,12 +19,31 @@ module.exports.create=async (req,res)=>{
             post.comments.push(comment);
             post.save();
            // console.log("done");
+           req.flash('success','Commented!')
             return res.redirect("back");
             }
             return res.redirect("back");
         }
     catch (err) {
-        console.log("Error in creating comment");
+        req.flash('error',"Error in creating comment");
         return res.redirect("back");
+    }
+}
+
+module.exports.destroy=async(req,res)=>{
+    let comment=Comment.findById(req.params.id);
+    if(comment.user == req.params.id)
+    {
+        let postId=comment.post;
+        comment.remove();
+
+        Post.findByIdAndUpdate(postId, {$pull:{comments : req.params.id}}, function(err,post){
+            req.flash('success','Comment deleted!')
+            return res.redirect('back');
+        })
+    }
+    else{
+        req.flash('error','Comment not deleted!');
+        return res.redirect('back');
     }
 }

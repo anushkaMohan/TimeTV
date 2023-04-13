@@ -11,6 +11,10 @@ const passportLocal=require('./config/passport-local-startegy');
 const expressLayout=require('express-ejs-layouts');
 const MongoStore=require('connect-mongo');
 const sassMiddleware=require('node-sass-middleware');
+const flash=require('connect-flash');
+const customFlashMiddleware=require('./config/middleware')
+
+
 
 app.use(sassMiddleware({
   src:'./assets/scss',
@@ -57,6 +61,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(passport.setAuthencticatedUser);
+
+//for flash messages
+app.use(flash());
+app.use(customFlashMiddleware.setFlash);
 
 //to use router
 app.use('/',require('./routes'));

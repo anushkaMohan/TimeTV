@@ -1,7 +1,5 @@
 
-       
-        <h1>TimeTV/<%=title%></h1>
-
+<div id="home-container">
      <% if (locals.user) {%>
 <section id="feed-posts">
         <h4>Posts</h4>
@@ -20,6 +18,14 @@
         </div>
 </section>
 <%}%>
+<section id="user_friends">
+        <h4>Friends</h4>
+       <% for(u of all_users){ %>
+          <p>
+                <a href="users/profile/<%=u.id%>"><%=u.name%></a>
+          </p>
+        <% } %>
 
-      
+</section>
+</div>     
     
