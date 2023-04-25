@@ -25,17 +25,20 @@ const userSchema=mongoose.Schema({
     
 });
 
-const storage = multer.diskStorage({
+let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, path.join(__dirname,'..',AVATAR_PATH));
+      cb(null, path.join(__dirname,'..',AVATAR_PATH)); 
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
       cb(null, file.fieldname + '-' + uniqueSuffix)
     }
-  })
+  });
   
-  const upload = multer({ storage: storage })
+userSchema.statics.uploadedAvatar=multer({storage: storage}).single('avatar');
+userSchema.statics.avatarPath=AVATAR_PATH;
+
+
 const User=mongoose.model("User",userSchema);
 
 module.exports=User;

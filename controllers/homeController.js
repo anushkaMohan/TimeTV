@@ -4,7 +4,7 @@ const User=require('../models/user');
 //File used to handle various actions
 module.exports.home=async function(req,res){
    try{
-    let posts=Post.find({})
+    let posts=await Post.find({})
    .sort('-createdAt')
    .populate('user')
    .populate({

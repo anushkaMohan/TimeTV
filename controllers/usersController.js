@@ -1,9 +1,12 @@
 const User=require('../models/user');
+const fs=require('fs');
+const path=require('path');
 
 module.exports.profile=async(req,res)=>{
     User.findById(req.params.id,async (err,user)=>{
         if(err){
             console.log("Error in finding user!");
+            req.flash("error", "Error in finding user in profile");
             return res.redirect('back');
         }
         return res.render('user_profile',{
@@ -12,11 +15,37 @@ module.exports.profile=async(req,res)=>{
                 });
     });
 }
-module.exports.update=function(req,res){
+module.exports.update=async function(req,res){
+   
     if(req.user.id == req.params.id){ 
-    User.findByIdAndUpdate(req.params.id,req.body,function(err,user){
-        return res.redirect('back');
-    })
+       
+        try{
+          let user=await User.findById(req.params.id);
+           User.uploadedAvtar(req,res,function(err){
+                 if(err){
+                    console.log("Multer error:",err);
+
+                 }
+                 user.name=req.body.name;
+                 user.email=req.body.email;
+
+                 if(req.file){
+                    if(user.avatar){
+                        fs.unlinkSync(path.join(__dirname,'..',user.avatar));
+                    }
+                    user.avatar=User.avatarPath+'/'+req.file.filename;
+                    //console.log(req.file);
+                    console.log(user.avatar);
+                 }
+                 user.save();
+                 return res.redirect('/');
+           });
+
+        }catch(err){
+             req.flash('Error',err);
+             res.redirect('back');
+        }
+
     }else{
         return res.status(401).send('unauthorised')
     }
